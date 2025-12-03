@@ -10,7 +10,7 @@
 </head>
 <body>
   <main class="wrap">
-    <h2>Chocolate</h2>
+    <h2>Mott Macdonalds</h2>
 
     <div class="controls">
       <button id="startBtn">Start camera</button>
@@ -70,8 +70,9 @@
 
 
               const payload = typeof result === 'string' ? { data: result } : result;
+                payload.companyname = 'company4';
               console.log(payload)
-              const resp = await fetch('/api/chocolate', {
+              const resp = await fetch('/api/company', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
