@@ -1,0 +1,29 @@
+---
+---
+<script>
+    (function() {
+        const match = document.cookie.split('; ').find(row => row.startsWith('registrationId='));
+        const registerid = match ? decodeURIComponent(match.split('=')[1]) : null;
+        if (!registerid) {
+            window.location.replace('/');
+        }
+        const img = document.querySelector('img[alt="QR Code for Virtual Venus access"]');
+        if (img && registerid) {
+            img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(registerid);
+        }
+
+    })();
+</script>
+<h1>Dashboard</h1>
+<p id="login-message" aria-live="polite"></p>
+<script>
+    (function() {
+        const match = document.cookie.split('; ').find(row => row.startsWith('email='));
+        const email = match ? decodeURIComponent(match.split('=')[1]) : null;
+        const el = document.getElementById('login-message');
+        if (email && el) {
+            el.textContent = `You are logged in as ${email}.`;
+        }
+    })();
+</script>
+<img src="" alt="QR Code for Virtual Venus access" />
