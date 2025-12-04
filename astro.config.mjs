@@ -5,12 +5,12 @@ import { defineConfig } from 'astro/config';
 
 import vercel from '@astrojs/vercel';
 
-// https://astro.build/config integrations: [react()],
+// https://astro.build/config  // output: 'server',integrations: [react()],
 export default defineConfig({
  
   adapter: vercel(),
-  output: 'server',
+ 
   server: {
-    allowedHosts: ['sgcf25.shalify.eu.org', 'hello.example.local']
+    allowedHosts: ['sgcf25.shalify.eu.org', 'gcf-acar.vercel.app']
   }
 });
