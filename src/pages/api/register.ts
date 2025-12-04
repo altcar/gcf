@@ -43,15 +43,15 @@ export const POST: APIRoute = async ({ request }) => {
 
 	const gradYear = Number.parseInt(gradYearInput, 10);
 	const currentYear = new Date().getFullYear();
-	if (!Number.isFinite(gradYear) || gradYear < currentYear || gradYear > currentYear + 10) {
-		errors.push('gradYear');
-	}
+	// if (!Number.isFinite(gradYear) || gradYear < currentYear || gradYear > currentYear + 10) {
+	// 	errors.push('gradYear');
+	// }
 
 	if (errors.length > 0) {
 		return jsonResponse(
 			{
 				success: false,
-				message: errors,
+				message: 'Please correct the highlighted fields.',
 				invalidFields: errors,
 			},
 			400,
