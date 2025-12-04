@@ -51,7 +51,7 @@ export const POST: APIRoute = async ({ request }) => {
 		return jsonResponse(
 			{
 				success: false,
-				message: 'Please correct the highlighted fields.',
+				message: errors,
 				invalidFields: errors,
 			},
 			400,
