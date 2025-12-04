@@ -8,7 +8,9 @@ import vercel from '@astrojs/vercel';
 // https://astro.build/config integrations: [react()],
 export default defineConfig({
  
-  adapter: vercel(),server: {
+  adapter: vercel(),
+  output: 'server',
+  server: {
     allowedHosts: ['sgcf25.shalify.eu.org', 'hello.example.local']
   }
 });
