@@ -1,32 +1,202 @@
 ---
+import Layout from '../layouts/Layout.astro';
 ---
-<script>
-    (function() {
-        const match = document.cookie.split('; ').find(row => row.startsWith('registrationId='));
-        const registerid = match ? decodeURIComponent(match.split('=')[1]) : null;
-        if (!registerid) {
-            window.location.replace('/');
-        }
-        const img = document.querySelector('img[alt="QR Code for Virtual Venus access"]');
-        if (img && registerid) {
-            img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(registerid);
-        }
 
-    })();
-</script>
-<h1>Dashboard</h1>
-<p id="login-message" aria-live="polite"></p>
-<p>Show your QR code to employers to collect a stamp for hot chocolate!</p>
-<script>
-    (function() {
-        const match = document.cookie.split('; ').find(row => row.startsWith('email='));
-        const email = match ? decodeURIComponent(match.split('=')[1]) : null;
-        const el = document.getElementById('login-message');
-        if (email && el) {
-            el.textContent = `You are logged in as ${email}.`;
-        }
-    })();
-</script>
-<img src="" style="width: 80vw;" alt="QR Code for Virtual Venus access" />
+<Layout>
+	<main class="page">
+		<section class="panel">
+			<header class="header">
+				<div>
+					<p class="eyebrow">Green Career Fair</p>
+					<h1>Your Visitor QR</h1>
+					<p class="subcopy" id="login-message" aria-live="polite"></p>
+				</div>
+				<a class="logout" href="/" id="logoutLink">Log out</a>
+			</header>
 
-<p>By showing your QR code to employers, you agree to share your email address with the company you scan.</p>
+			<div class="content">
+				<div class="qr">
+					<img src="" alt="Visitor QR code" id="qrImage" />
+					<p class="qr-label">Show this at each company booth to collect your stamps.</p>
+				</div>
+				<div class="tips">
+					<h2>How it works</h2>
+					<ol>
+						<li>Register once using your university email.</li>
+						<li>Each company scans your QR to mark a visit.</li>
+						<li>After all companies, scan at the chocolate counter.</li>
+					</ol>
+					<p class="consent">By showing your QR code, you agree to share your email with the company you scan.</p>
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>
+
+<script>
+	(function () {
+		const match = document.cookie.split('; ').find((row) => row.startsWith('registrationId='));
+		const registerId = match ? decodeURIComponent(match.split('=')[1]) : '';
+		if (!registerId) {
+			window.location.replace('/');
+			return;
+		}
+
+		const img = document.getElementById('qrImage');
+		if (img) {
+			img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(registerId)}`;
+		}
+
+		const emailMatch = document.cookie.split('; ').find((row) => row.startsWith('email='));
+		const email = emailMatch ? decodeURIComponent(emailMatch.split('=')[1]) : '';
+		const message = document.getElementById('login-message');
+		if (message && email) {
+			message.textContent = `Logged in as ${email}.`;
+		}
+
+		const logoutLink = document.getElementById('logoutLink');
+		if (logoutLink) {
+			logoutLink.addEventListener('click', () => {
+				document.cookie = 'registrationId=; path=/; max-age=0; SameSite=Lax; Secure';
+				document.cookie = 'email=; path=/; max-age=0; SameSite=Lax; Secure';
+			});
+		}
+	})();
+</script>
+
+<style>
+	:global(body) {
+		margin: 0;
+		font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+		background: radial-gradient(circle at top, #e9f2e7 0%, #f6f2e8 40%, #f7f5f0 100%);
+		color: #102317;
+	}
+
+	.page {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 3.5rem 1.5rem;
+	}
+
+	.panel {
+		width: min(980px, 100%);
+		background: rgba(255, 255, 255, 0.96);
+		border-radius: 28px;
+		padding: 2.5rem clamp(1.5rem, 3vw, 3rem);
+		box-shadow: 0 25px 80px rgba(15, 40, 18, 0.2);
+		backdrop-filter: blur(6px);
+	}
+
+	.header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+	}
+
+	.eyebrow {
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		font-size: 0.75rem;
+		font-weight: 700;
+		color: #2f6a3b;
+		margin: 0 0 0.5rem 0;
+	}
+
+	h1 {
+		font-size: clamp(2rem, 4vw, 3rem);
+		margin: 0 0 0.5rem 0;
+	}
+
+	.subcopy {
+		margin: 0;
+		color: #375744;
+		font-weight: 500;
+	}
+
+	.logout {
+		text-decoration: none;
+		background: #1f8a4d;
+		color: #fff;
+		padding: 0.6rem 1.2rem;
+		border-radius: 999px;
+		font-weight: 600;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.logout:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 25px rgba(31, 138, 77, 0.3);
+	}
+
+	.content {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 2rem;
+		align-items: center;
+	}
+
+	.qr {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.5rem;
+		border-radius: 20px;
+		background: #f3f8f2;
+		border: 1px solid rgba(31, 138, 77, 0.15);
+	}
+
+	.qr img {
+		width: min(260px, 70vw);
+		height: auto;
+		border-radius: 18px;
+		background: #fff;
+		padding: 0.5rem;
+		box-shadow: 0 14px 30px rgba(7, 33, 17, 0.18);
+	}
+
+	.qr-label {
+		margin: 0;
+		font-weight: 600;
+		color: #234232;
+		text-align: center;
+	}
+
+	.tips {
+		padding: 0 1rem;
+	}
+
+	.tips h2 {
+		font-size: 1.5rem;
+		margin-bottom: 0.8rem;
+		color: #173c27;
+	}
+
+	.tips ol {
+		margin: 0 0 1.2rem 1.2rem;
+		padding: 0;
+		color: #375744;
+		display: grid;
+		gap: 0.5rem;
+	}
+
+	.consent {
+		font-size: 0.95rem;
+		color: #5a6e62;
+	}
+
+	@media (max-width: 700px) {
+		.panel {
+			padding: 2rem 1.5rem;
+		}
+		.logout {
+			width: 100%;
+			text-align: center;
+		}
+	}
+</style>

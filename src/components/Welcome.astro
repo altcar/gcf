@@ -52,13 +52,13 @@ import background from '../assets/background.svg';
 		statusEl.textContent = '';
 		submitBtn.disabled = true;
 
-		const fd = new FormData(form);
-		const payload = {
-			name: fd.get('name')?.toString() || '',
-			email: fd.get('email')?.toString() || '',
-			course: fd.get('course')?.toString() || '',
-			gradYear: fd.get('gradYear')?.toString() || '',
-		};
+			const fd = new FormData(form);
+			const payload = {
+				name: fd.get('name')?.toString() || '',
+				email: fd.get('email')?.toString() || '',
+				course: fd.get('course')?.toString() || '',
+				gradYear: fd.get('gradYear')?.toString() || '',
+			};
 
 		try {
 			const res = await fetch('/api/register', {
@@ -68,20 +68,16 @@ import background from '../assets/background.svg';
 			});
 
 			if (res.ok) {
-
-			
-				// parse response and store auto id in localStorage if present
-				const data = await res.json().catch(() => null);	console.log(data.data.id);
-				const id = String(data.data?.id ?? data.id ?? data.ID ?? data._id);
-						console.log('Storing registration ID in cookie:', id);
-						const maxAge = 60 * 60 * 24 * 30; // 30 days
-						document.cookie = `registrationId=${encodeURIComponent(id)}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
-				const email = String(data.data?.email ?? data.id ?? data.ID ?? data._id);
-						console.log('Storing registration ID in cookie:', id);
-					
-						document.cookie = `email=${encodeURIComponent(email)}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
-			
-				
+				const data = await res.json().catch(() => null);
+				const id = String(data?.data?.id ?? data?.id ?? data?.ID ?? data?._id ?? '');
+				if (id) {
+					const maxAge = 60 * 60 * 24 * 30;
+					document.cookie = `registrationId=${encodeURIComponent(id)}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
+				}
+				const email = String(data?.data?.email ?? payload.email ?? '');
+				if (email) {
+					document.cookie = `email=${encodeURIComponent(email)}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
+				}
 			}
 
 			if (!res.ok) {
@@ -89,7 +85,7 @@ import background from '../assets/background.svg';
 				statusEl.textContent = 'Registration failed: ' + (err.message || res.statusText);
 				statusEl.style.color = 'crimson';
 			} else {
-				statusEl.textContent = 'Registration successful. Check your email for next steps.';
+				statusEl.textContent = 'Registration successful. Redirecting to your QR code...';
 				statusEl.style.color = 'green';
 				window.location.href = '/dashboard';
 				form.reset();
